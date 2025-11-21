@@ -1,19 +1,20 @@
 CC=C:\avr\bin\avr-g++
-LD=C:\avr\bin\avr-ld
-OBJCOPY="C:\avr\bin\avr-objcopy"
-OBJDUMP="C:\avr\bin\avr-objdump"
-AVRSIZE="C:\avr\bin\avr-size"
-OBJISP="C:\avr\bin\avrdude"
+OBJCOPY=C:\avr\bin\avr-objcopy
+OBJDUMP=C:\avr\bin\avr-objdump
+AVRSIZE=C:\avr\bin\avr-size
+AVRDUDE=C:\avr\bin\avrdude
+
 MCU=atmega328p
 PROGRAMMER=arduino
 BAUDRATE=115200
-CFLAGS=-std=c++17 -Wall -Wextra  -Wundef -pedantic \
-		-Os  -DF_CPU=16000000UL -mmcu=${MCU} -DBAUD=19200
+PORT=\\\\.\\COM8
+
+CFLAGS=-std=c++17 -Wall -Wextra -Wundef -pedantic \
+       -Os -DF_CPU=16000000UL -mmcu=${MCU}
+
 LDFLAGS=-mmcu=$(MCU)
-PORT=\\\\.\\COM4
+
 BIN=led_simple
-OUT=${BIN}.hex
-SOURCES = main.cpp src/millis.cpp src/led_driver.cpp src/button_driver.cpp
 
 DEBUG?=1
 
@@ -23,36 +24,32 @@ else
 	OUTPUTDIR=bin/release
 endif
 
-OBJS =  $(addprefix $(OUTPUTDIR)/,$(SOURCES:.cpp=.o))
+SOURCES = main.cpp src/millis.cpp src/led_driver.cpp src/button_driver.cpp
+OBJS = $(addprefix $(OUTPUTDIR)/,$(SOURCES:.cpp=.o))
 
-all: $(OUTPUTDIR)  $(OUT) 
+ELF=$(OUTPUTDIR)/$(BIN).elf
+HEX=$(OUTPUTDIR)/$(BIN).hex
+MAP=$(OUTPUTDIR)/$(BIN).map
 
-$(OBJS): Makefile
+all: $(OUTPUTDIR) $(HEX)
 
-$(OUTPUTDIR)/%.o:%.cpp
-	$(CC) $(CFLAGS) -MD -o $@ -c $<
-
-%.lss: %.elf
-	$(OBJDUMP) -h -S -s $< > $@
-
-%.elf: $(OBJS)
-	$(CC) -Wl,-Map=$(@:.elf=.map) $(LDFLAGS) -o $@ $^
-	$(AVRSIZE) $@
-
-
-$(OBJS):$(SOURCES)
-
-%.hex: %.elf
-	$(OBJCOPY) -O ihex -R .fuse -R .lock -R .user_signatures -R .comment $< $@
-
-isp: ${BIN}.hex
-	$(OBJISP) -F -V -c $(PROGRAMMER) -p ${MCU} -P ${PORT} -b $(BAUDRATE) -U flash:w:$<
-
-clean:
-	del "$(OUT)"  *.map *.P *.d
-
-$(OUTPUTDIR): 
+$(OUTPUTDIR):
 	@mkdir "$(OUTPUTDIR)"
 	@mkdir "$(OUTPUTDIR)/src"
-		   	
-.PHONY: clean dirs
+
+$(OUTPUTDIR)/%.o: %.cpp
+	$(CC) $(CFLAGS) -MD -c $< -o $@
+
+$(ELF): $(OBJS)
+	$(CC) -Wl,-Map=$(MAP) $(LDFLAGS) -o $@ $^
+	$(AVRSIZE) $@
+
+$(HEX): $(ELF)
+	$(OBJCOPY) -O ihex -R .fuse -R .lock -R .user_signatures -R .comment $< $@
+
+isp: $(HEX)
+	$(AVRDUDE) -v -c$(PROGRAMMER) -p$(MCU) -P$(PORT) -b$(BAUDRATE) \
+		-D -Uflash:w:$(HEX):i
+
+clean:
+	del /Q "$(OUTPUTDIR)\*.*"
