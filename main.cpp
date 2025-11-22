@@ -10,16 +10,27 @@
 int main(void) {
     sei();
     millis_init();
-    
-    led_handle green(&DDRB, &PORTB, &PINB, PB5);
-    button_handle green_button(&DDRB, &PORTB, &PINB, PB4);
 
+    button_handle buttons[] = {
+        button_handle(&DDRB, &PORTB, &PINB, PB5),
+        button_handle(&DDRB, &PORTB, &PINB, PB4),
+        button_handle(&DDRB, &PORTB, &PINB, PB3),
+        button_handle(&DDRB, &PORTB, &PINB, PB2)
+    };
+    
+    led_handle leds[] = {
+        led_handle(&DDRB, &PORTB, &PINB, PB0),
+        led_handle(&DDRD, &PORTD, &PIND, PD7),
+        led_handle(&DDRD, &PORTD, &PIND, PD6),
+        led_handle(&DDRD, &PORTD, &PIND, PD5)
+    };
+    
     while(1) {
-        if (green_button.is_pressed()) {
-            green.toggle();
+        for (uint8_t i = 0; i < (sizeof(leds) / sizeof(leds[0])); i++) {
+            if (buttons[i].is_pressed()) leds[i].toggle();
         }
     
-        millis_wait_ms(50);
+        millis_wait_ms(20);
     }
 
     return 0;
