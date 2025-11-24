@@ -4,12 +4,13 @@
 #include <util/atomic.h>
 
 #include "include/millis.h"
-#include "include/led_driver.hpp"
-#include "include/button_driver.hpp"
+#include "include/game_system.hpp"
+#include "include/random_seed.hpp"
 
 int main(void) {
     sei();
     millis_init();
+    setup_seed();
 
     button_handle buttons[] = {
         button_handle(&DDRB, &PORTB, &PINB, PB5),
@@ -25,11 +26,10 @@ int main(void) {
         led_handle(&DDRD, &PORTD, &PIND, PD5)
     };
     
-    while(1) {
-        for (uint8_t i = 0; i < (sizeof(leds) / sizeof(leds[0])); i++) {
-            if (buttons[i].is_pressed()) leds[i].toggle();
-        }
+    game_system game(leds, static_cast<uint8_t>(sizeof(leds) / sizeof(leds[0])), buttons, static_cast<uint8_t>(sizeof(buttons) / sizeof(buttons[0])));
     
+    while(1) {
+        game.run_game();
         millis_wait_ms(20);
     }
 

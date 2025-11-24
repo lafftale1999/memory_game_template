@@ -7,7 +7,7 @@
 
 #include "avr/io.h"
 
-#define DEBOUNCE_MS 150
+#define DEBOUNCE_MS 200
 
 class button_handle {
 private:
@@ -46,6 +46,8 @@ public:
     */
     bool is_pressed();
 
+    void flush();
+    
     /* 
     Helper function for dispatching ISR for our buttons.
     */
