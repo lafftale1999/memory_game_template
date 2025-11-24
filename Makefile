@@ -13,8 +13,10 @@ CFLAGS=-std=c++17 -Wall -Wextra -Wundef -pedantic \
        -Os -DF_CPU=16000000UL -mmcu=${MCU}
 
 LDFLAGS=-mmcu=$(MCU)
-
-BIN=led_simple
+PORT=\\\\.\\COM8
+BIN=memory_game
+OUT=${BIN}.hex
+SOURCES = main.cpp src/millis.cpp src/led_driver.cpp src/button_driver.cpp src/game_gui.cpp src/game_input.cpp src/game_system.cpp src/random_seed.cpp src/game_logic.cpp src/usart.cpp
 
 DEBUG?=1
 

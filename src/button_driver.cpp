@@ -80,6 +80,10 @@ button_handle::~button_handle() {
     }
 }
 
+void button_handle::flush() {
+    pressed = false;
+}
+
 ISR(PCINT0_vect) { button_handle::dispatch_isr(); }
 ISR(PCINT1_vect) { button_handle::dispatch_isr(); }
 ISR(PCINT2_vect) { button_handle::dispatch_isr(); }
