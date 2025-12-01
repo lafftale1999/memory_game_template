@@ -36,6 +36,7 @@ MAP=$(OUTPUTDIR)/$(BIN).map
 all: $(OUTPUTDIR) $(HEX)
 
 $(OUTPUTDIR):
+	@mkdir "bin"
 	@mkdir "$(OUTPUTDIR)"
 	@mkdir "$(OUTPUTDIR)/src"
 
