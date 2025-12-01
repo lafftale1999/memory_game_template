@@ -51,8 +51,9 @@ isp: ${BIN}.hex
 clean:
 	del "$(OUT)"  *.map *.P *.d
 
-$(OUTPUTDIR): 
+$(OUTPUTDIR):
+	@mkdir "bin"
 	@mkdir "$(OUTPUTDIR)"
-	@mkdir "$(OUTPUTDIR)/src"
+	@mkdir "$(OUTPUTDIR)\src"
 		   	
 .PHONY: clean dirs

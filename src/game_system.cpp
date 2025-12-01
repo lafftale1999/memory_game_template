@@ -18,7 +18,7 @@ void game_system::show_high_score() {
         gui.error_animation();
     } else {
         gui.bit_led_animation(current_highscore);
-        millis_wait_ms(2000);
+        input_source.wait_for_input();
     }
 }
 
@@ -41,17 +41,22 @@ void game_system::game_lost() {
     }
 }
 
+void game_system::wrong_entry() {
+    gui.wrong_entry_animation();
+    show_sequence();
+}
+
 void game_system::show_sequence() {
     uint8_t i = 0;
     char buf[10];
     while((i = game.read_single_sequence()) != END_OF_SEQUENCE) {
-        gui.blink_sequence(i, 500);
+        gui.blink_sequence(i, GAME_SYSTEM_SEQUENCE_INTERVAL_MS);
     }
 }
 
 void game_system::new_round() {
+    gui.win_animation();
     game.generate_game_round();
-
     show_sequence();
 }
 
@@ -63,10 +68,9 @@ void game_system::play_game() {
     game_state state = game.get_state();
 
     new_round();
-    char buf[20];
     while(state != PLAYER_LOST) {
         input_source.flush();
-        user_input = input_source.wait_for_input_ms(5000);
+        user_input = input_source.wait_for_input_ms(GAME_SYSTEM_INPUT_TIMEOUT_MS);
         
         if (user_input == INPUT_TIMEOUT) state = PLAYER_LOST;
         else {
@@ -79,12 +83,10 @@ void game_system::play_game() {
                 continue;
             
             case WRONG_ENTRY:
-                gui.wrong_entry_animation();
-                show_sequence();
+                wrong_entry();
                 continue;
                 
             case ROUND_CLEARED:
-                gui.win_animation();
                 new_round();
                 continue;
 
@@ -110,8 +112,6 @@ game_system::game_system(led_handle* leds, uint8_t leds_size, button_handle* but
 }
 
 void game_system::run_game() {
-    // USART_Init(MYUBRR);
-
     while(1) {
         gui.start_up_animation();
         gui.menu_choice_animation(2);

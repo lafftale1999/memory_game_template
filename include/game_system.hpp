@@ -7,6 +7,9 @@
 #include "millis.h"
 #include "random_seed.hpp"
 
+#define GAME_SYSTEM_SEQUENCE_INTERVAL_MS    500
+#define GAME_SYSTEM_INPUT_TIMEOUT_MS        5000
+
 class game_system {
 private:
     game_gui gui;
@@ -21,6 +24,7 @@ private:
     void reset_game();
     void game_won();
     void game_lost();
+    void wrong_entry();
     void play_game();
     void new_round();
 

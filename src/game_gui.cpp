@@ -86,18 +86,20 @@ void game_gui::start_game_animation() {
 
 void game_gui::win_animation() {
     reset_leds();
+    
+    for (uint8_t j = 0; j < 2; j++) {
+        for (uint8_t i = 0; i < leds_size; i++) {
+            leds[i].turn_on();
+            millis_wait_ms(GUI_SEQUENCE_INTERVAL_MS);
+        }
 
-    for (uint8_t i = 0; i < leds_size; i++) {
-        leds[i].turn_on();
-        millis_wait_ms(GUI_SEQUENCE_INTERVAL_MS);
+        for (uint8_t i = 0; i < leds_size; i++) {
+            leds[i].turn_off();
+            millis_wait_ms(GUI_SEQUENCE_INTERVAL_MS);
+        }
     }
 
-    for (uint8_t i = 0; i < leds_size; i++) {
-        leds[i].turn_off();
-        millis_wait_ms(GUI_SEQUENCE_INTERVAL_MS);
-    }
-
-    for (uint8_t i = 0; i < 6; i++) {
+    for (uint8_t i = 0; i < 3; i++) {
         turn_on_all_leds();
         millis_wait_ms(GUI_BLINK_FAST_INTERVAL_MS);
         reset_leds();

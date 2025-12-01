@@ -51,17 +51,6 @@ game_state game_logic::check_entry(uint8_t entry) {
     return state;
 }
 
-/* 
-uint8_t sequence[GAME_LOGIC_MAX_SEQUENCES];
-uint8_t sequence_size;
-uint8_t current_entry_pos;
-uint8_t max_range;
-uint8_t level;
-uint8_t max_level;
-uint8_t lives;
-game_state state;
-
-*/
 void game_logic::reset_game() {
     sequence_size = 0;
     current_entry_pos = 0;

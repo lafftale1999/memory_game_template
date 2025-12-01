@@ -24,7 +24,7 @@ uint8_t game_input::wait_for_input() {
         for (uint8_t i = 0; i < buttons_size; i++) {
             if (buttons[i].is_pressed()) return i;
         }
-        millis_wait_ms(25);
+        millis_wait_ms(10);
     }
 }
 
