@@ -1,8 +1,8 @@
 # Memory Game Challenge
 You have been tasked with creating a Memory Game. The game tests the users memory, by showing a sequence of lights toggling on and off and then letting the user enter the correct order using buttons. Down below you will find a video demo, the *requirements specification* and how to properly setup the project.
 
-Link to video demo: https://youtu.be/fk4rhxh90CQ 
-Link to wokwi project: https://wokwi.com/projects/448275160456641537
+* Link to video demo: https://youtu.be/fk4rhxh90CQ 
+* Link to wokwi project: https://wokwi.com/projects/448275160456641537
 
 ## Requirements Specification
 For this project, you have already been supplied with the drivers for the buttons and the leds. As you can see in main, this is the logic used for checking input and controlling the leds.
